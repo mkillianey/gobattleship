@@ -1,0 +1,15 @@
+Fun with the Go programming language!
+=====================================
+(My first Go application.)
+
+The battleship *command* is in cmd/battleship.  (This is the executable.)
+The battleship *library* is in pkg/battleship.  (Can be used by multiple commands.)
+
+"make" builds the package, installs it locally, and generates an executable command:
+    ./cmd/battleship/battleship
+
+"make test" builds and runs the tests in the battleship package:
+    ./pkg/battleship
+ 
+"make clean" removes the cruft
+
