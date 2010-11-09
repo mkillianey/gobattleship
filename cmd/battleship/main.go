@@ -14,10 +14,10 @@ func main() {
     //board := battleship.Board1()  // works, but slow
     board := battleship.Board2() // doesn't get ships right
 
-    fmt.Printf("Solving board:\n%v\n", board)
+    fmt.Printf("Attempting board:\n%v\n", board)
     if board.Solve() {
-        fmt.Println("Solved!")
+        fmt.Printf("Solved:\n%v\n", board)
     } else {
-        fmt.Println("Could not solve!")
+        fmt.Printf("Could not solve!")
     }
 }

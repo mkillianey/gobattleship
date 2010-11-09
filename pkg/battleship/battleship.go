@@ -163,6 +163,7 @@ type Board struct {
     rowClues    []int
     columnClues []int
     ships       []int
+    turn_counter int // just for fun, number of attempts
 }
 
 func (board *Board) NumberOfRows() int {
@@ -338,13 +339,9 @@ func (board *Board) CalcPossibleSquaresFor(coord *Coord) *vector.IntVector {
     return &possibilities
 }
 
-var global_counter int = 0
-
 func (board *Board) Solve() bool {
     coord := board.GetCoordOfUnsolvedSquare()
     if coord == nil {
-        fmt.Printf("At turn %v found solution:\n%v\n",
-            global_counter, board)
         return true // all solved!
     }
 
@@ -352,10 +349,10 @@ func (board *Board) Solve() bool {
 
     for _, possibility := range *possibilities {
         square := Square(possibility)
-        global_counter++
-        //if global_counter % 1000 == 0 {
+        board.turn_counter++
+        //if board.turn_counter % 1000 == 0 {
         //    fmt.Printf("At turn %v possibilities for %v are %v, trying %v (%v)\n%v\n",
-        //              global_counter, coord, possibilities,
+        //              board.turn_counter, coord, possibilities,
         //              possibility, square, board)
         //}
         board.SetSquareAt(coord, square)
