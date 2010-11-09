@@ -1,3 +1,6 @@
+// Copyright (c) 2010 Mick Killianey and Ivan Moore.
+// All rights reserved.  See the LICENSE file for details.
+
 package battleship
 
 import (
@@ -5,14 +8,14 @@ import (
 )
 
 func assertCanAppearAbove(t *testing.T, s1 Square, s2 Square) {
-    if (!s1.CanAppearAbove(s2)) {
-        t.Errorf("%v.CanAppearAbove(%v) should be true", s1, s2);
+    if !s1.CanAppearAbove(s2) {
+        t.Errorf("%v.CanAppearAbove(%v) should be true", s1, s2)
     }
 }
 
 func assertCannotAppearAbove(t *testing.T, s1 Square, s2 Square) {
-    if (s1.CanAppearAbove(s2)) {
-        t.Errorf("%v.CanAppearAbove(%v) should be true", s1, s2);
+    if s1.CanAppearAbove(s2) {
+        t.Errorf("%v.CanAppearAbove(%v) should be true", s1, s2)
     }
 }
 
@@ -38,4 +41,3 @@ func TestSolveBoard2(t *testing.T) {
         t.Error("Could not find solution")
     }
 }
-
