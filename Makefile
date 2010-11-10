@@ -20,7 +20,10 @@ clean:
 	$(MAKE) -C cmd/battleship clean
 
 test: 
-	$(MAKE) -C pkg/battleship test
+	$(MAKE) -C pkg/battleship test 
+
+gotest: 
+	$(MAKE) -C pkg/battleship gotest 
 
 bench:
 	$(MAKE) -C pkg/battleship bench

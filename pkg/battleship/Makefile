@@ -6,16 +6,20 @@ include $(GOROOT)/src/Make.inc
 TARG=battleship
 
 GOFMT=gofmt -s -spaces=true -tabindent=false -tabwidth=4
+GOTEST=gotest -v
 
 GOFILES=\
 	battleship.go\
 	boards.go\
+	coord.go\
+	square.go\
 
 include $(GOROOT)/src/Make.pkg
 
+gotest:
+	$(GOTEST)
+
 format:
-	$(GOFMT) -w battleship.go
-	$(GOFMT) -w battleship_test.go
-	$(GOFMT) -w boards.go
+	$(GOFMT) -w *.go
 
 	
