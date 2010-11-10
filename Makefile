@@ -8,6 +8,9 @@ TARG = battleship
 PKG_DIR = pkg
 CMD_DIR = cmd
 
+GODOC_PORT=8000
+GODOC = godoc -http=:$(GODOC_PORT) -path=`pwd`/pkg
+
 all: 
 	$(MAKE) -C pkg/battleship 
 	$(MAKE) -C pkg/battleship install
@@ -31,4 +34,10 @@ bench:
 format:
 	$(MAKE) -C pkg/battleship format
 	$(MAKE) -C cmd/battleship format
+
+doc:
+	echo "Running on http://localhost:$(GODOC_PORT)"
+	$(GODOC)
+
+
 	
