@@ -8,182 +8,12 @@ import (
     "container/vector"
 )
 
-type Square int
-
-const (
-    UNSOLVED = Square(iota)
-    WATER
-    TOP
-    BOTTOM
-    LEFT
-    RIGHT
-    SINGLE
-    MIDDLE
-    OUT_OF_BOUNDS
-)
-
-// The solved squares
-var SQUARES = []Square{WATER, TOP, BOTTOM, LEFT, RIGHT, SINGLE, MIDDLE}
-
-func (square Square) String() string {
-    switch square {
-    case UNSOLVED:
-        return "UNSOLVED"
-    case WATER:
-        return "WATER"
-    case TOP:
-        return "TOP"
-    case BOTTOM:
-        return "BOTTOM"
-    case LEFT:
-        return "LEFT"
-    case RIGHT:
-        return "RIGHT"
-    case SINGLE:
-        return "SINGLE"
-    case MIDDLE:
-        return "MIDDLE"
-    case OUT_OF_BOUNDS:
-        return "OUT_OF_BOUNDS"
-    }
-    return fmt.Sprintf("Unrecognized square: %v", int(square))
-}
-
-func (square Square) IsShip() bool {
-    switch square {
-    case TOP,
-        BOTTOM,
-        LEFT,
-        RIGHT,
-        MIDDLE,
-        SINGLE:
-        return true
-    }
-    return false
-}
-
-func (square Square) IsWater() bool {
-    return square == WATER
-}
-
-func (square Square) IsUnsolved() bool {
-    return square == UNSOLVED
-}
-
-func (square Square) IsOutOfBounds() bool {
-    return square == OUT_OF_BOUNDS
-}
-
-func (this Square) CanAppearAbove(that Square) bool {
-    if this.IsUnsolved() || that.IsUnsolved() {
-        return true
-    }
-    switch this {
-    case WATER, OUT_OF_BOUNDS:
-        return that != BOTTOM
-    case LEFT, RIGHT, BOTTOM, SINGLE:
-        return that == WATER || that == OUT_OF_BOUNDS
-    case TOP:
-        return that == MIDDLE || that == BOTTOM
-    case MIDDLE:
-        return that == MIDDLE || that == BOTTOM || that == WATER || that == OUT_OF_BOUNDS
-    }
-    return false
-}
-
-func (this Square) CanAppearBelow(that Square) bool {
-    return that.CanAppearAbove(this)
-}
-
-func (this Square) CanAppearLeftOf(that Square) bool {
-    if this.IsUnsolved() || that.IsUnsolved() {
-        return true
-    }
-    switch this {
-    case WATER, OUT_OF_BOUNDS:
-        return that != RIGHT
-    case TOP, BOTTOM, RIGHT, SINGLE:
-        return that.IsWater() || that.IsOutOfBounds()
-    case LEFT:
-        return that == MIDDLE || that == RIGHT
-    case MIDDLE:
-        return that == MIDDLE || that == RIGHT || that.IsWater() || that.IsOutOfBounds()
-    }
-    return false
-}
-
-func (this Square) CanAppearRightOf(that Square) bool {
-    return that.CanAppearLeftOf(this)
-}
-
-func (this Square) CanAppearDiagonallyAdjacentTo(that Square) bool {
-    return !(this.IsShip() && that.IsShip())
-}
-
-type Coord struct {
-    row, column int
-}
-
-func (coord *Coord) String() string {
-    return fmt.Sprintf("(%v,%v)", coord.row, coord.column)
-}
-
-// Returns the coord adjacent immediately above this coord
-func (coord *Coord) Above() *Coord {
-    return &Coord{row: coord.row - 1, column: coord.column}
-}
-
-// Returns the coord adjacent immediately below this coord
-func (coord *Coord) Below() *Coord {
-    return &Coord{row: coord.row + 1, column: coord.column}
-}
-
-// Returns the coord immediately to the left of this coord
-func (coord *Coord) Left() *Coord {
-    return &Coord{row: coord.row, column: coord.column - 1}
-}
-
-// Returns the coord immediately to the right of this coord
-func (coord *Coord) Right() *Coord {
-    return &Coord{row: coord.row, column: coord.column + 1}
-}
-
-// Returns a new coord in this coord's row, but with the given column
-func (coord *Coord) WithColumn(column int) *Coord {
-    return &Coord{row: coord.row, column: column}
-}
-
-// Returns a new coord in this coord's column, but with the given row
-func (coord *Coord) WithRow(row int) *Coord {
-    return &Coord{row: row, column: coord.column}
-}
-
 type Board struct {
-    squares     [][]Square // [row][column] order
-    rowClues    []int
-    columnClues []int
-    ships       []int
+    squares      [][]Square // [row][column] order
+    rowClues     []int
+    columnClues  []int
+    ships        []int
     turn_counter int // just for fun, number of attempts
-}
-
-func (board *Board) NumberOfRows() int {
-    return len(board.rowClues)
-}
-
-func (board *Board) NumberOfColumns() int {
-    return len(board.columnClues)
-}
-
-func (board *Board) GetSquareAt(coord *Coord) Square {
-    if (coord.column < 0) || (coord.column >= len(board.columnClues)) ||
-        (coord.row < 0) || (coord.row >= len(board.rowClues)) {
-        return OUT_OF_BOUNDS
-    }
-    return board.squares[coord.row][coord.column]
-}
-
-func (board Board) SetSquareAt(coord *Coord, square Square) {
-    board.squares[coord.row][coord.column] = square
 }
 
 func (board *Board) String() string {
@@ -219,6 +49,26 @@ func (board *Board) String() string {
     }
     s += "\n"
     return s
+}
+
+func (board *Board) NumberOfRows() int {
+    return len(board.rowClues)
+}
+
+func (board *Board) NumberOfColumns() int {
+    return len(board.columnClues)
+}
+
+func (board *Board) GetSquareAt(coord *Coord) Square {
+    if (coord.column < 0) || (coord.column >= len(board.columnClues)) ||
+        (coord.row < 0) || (coord.row >= len(board.rowClues)) {
+        return OUT_OF_BOUNDS
+    }
+    return board.squares[coord.row][coord.column]
+}
+
+func (board Board) SetSquareAt(coord *Coord, square Square) {
+    board.squares[coord.row][coord.column] = square
 }
 
 func (board *Board) GetCoordOfUnsolvedSquare() *Coord {
