@@ -8,16 +8,24 @@ import (
 )
 
 func checkSquareCanAppearAbove(t *testing.T, expected bool, s1 Square, s2 Square) {
-    actual := s1.CanAppearAbove(s2)
-    if actual != expected {
+    if actual := s1.CanAppearAbove(s2); actual != expected {
         t.Errorf("%v.CanAppearAbove(%v) should be %v, was %v", s1, s2, expected, actual)
     }
 }
 
 func checkSquareCanAppearLeftOf(t *testing.T, expected bool, s1 Square, s2 Square) {
-    actual := s1.CanAppearLeftOf(s2)
-    if actual != expected {
+    if actual := s1.CanAppearLeftOf(s2); actual != expected {
         t.Errorf("%v.CanAppearLeftOf(%v) should be %v, was %v", s1, s2, expected, actual)
+    }
+}
+
+
+func TestSquare_String(t *testing.T) {
+    if s := WATER.String(); s != "WATER" {
+        t.Errorf("Wrong string for WATER: %v", s)
+    }
+    if s := LEFT.String(); s != "LEFT" {
+        t.Errorf("Wrong string for LEFT: %v", s)
     }
 }
 

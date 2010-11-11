@@ -70,48 +70,48 @@ func TestCoord_NavigatingAroundOrigin(t *testing.T) {
     assertCoordEquals(t, start, finish)
 }
 
-func BenchmarkNewCoord(b *testing.B) {
+func BenchmarkCoord_NewCoord(b *testing.B) {
     for i := 0; i < b.N; i++ {
         NewCoord(i, i)
     }
 }
 
-func BenchmarkWithRow(b *testing.B) {
+func BenchmarkCoord_WithRow(b *testing.B) {
     c := NewCoord(0, 0)
     for i := 0; i < b.N; i++ {
         c.WithRow(i)
     }
 }
 
-func BenchmarkWithColumn(b *testing.B) {
+func BenchmarkCoord_WithColumn(b *testing.B) {
     c := NewCoord(0, 0)
     for i := 0; i < b.N; i++ {
         c.WithColumn(i)
     }
 }
 
-func BenchmarkAbove(b *testing.B) {
+func BenchmarkCoord_Above(b *testing.B) {
     c := NewCoord(0, 0)
     for i := 0; i < b.N; i++ {
         c = c.Above()
     }
 }
 
-func BenchmarkBelow(b *testing.B) {
+func BenchmarkCoord_Below(b *testing.B) {
     c := NewCoord(0, 0)
     for i := 0; i < b.N; i++ {
         c = c.Below()
     }
 }
 
-func BenchmarkLeft(b *testing.B) {
+func BenchmarkCoord_Left(b *testing.B) {
     c := NewCoord(0, 0)
     for i := 0; i < b.N; i++ {
         c = c.Left()
     }
 }
 
-func BenchmarkRight(b *testing.B) {
+func BenchmarkCoord_Right(b *testing.B) {
     c := NewCoord(0, 0)
     for i := 0; i < b.N; i++ {
         c = c.Right()

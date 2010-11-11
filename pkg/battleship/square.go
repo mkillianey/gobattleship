@@ -24,26 +24,22 @@ const (
 // The solved squares
 var SQUARES = []Square{WATER, TOP, BOTTOM, LEFT, RIGHT, SINGLE, MIDDLE}
 
+var SQUARE_NAMES = map[Square]string{
+    UNSOLVED:      "UNSOLVED",
+    WATER:         "WATER",
+    TOP:           "TOP",
+    BOTTOM:        "BOTTOM",
+    LEFT:          "LEFT",
+    RIGHT:         "RIGHT",
+    SINGLE:        "SINGLE",
+    MIDDLE:        "MIDDLE",
+    OUT_OF_BOUNDS: "OUT_OF_BOUNDS",
+}
+
+
 func (square Square) String() string {
-    switch square {
-    case UNSOLVED:
-        return "UNSOLVED"
-    case WATER:
-        return "WATER"
-    case TOP:
-        return "TOP"
-    case BOTTOM:
-        return "BOTTOM"
-    case LEFT:
-        return "LEFT"
-    case RIGHT:
-        return "RIGHT"
-    case SINGLE:
-        return "SINGLE"
-    case MIDDLE:
-        return "MIDDLE"
-    case OUT_OF_BOUNDS:
-        return "OUT_OF_BOUNDS"
+    if name, ok := SQUARE_NAMES[square]; ok {
+        return name
     }
     return fmt.Sprintf("Unrecognized square: %v", int(square))
 }

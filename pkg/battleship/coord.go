@@ -53,7 +53,7 @@ func (coord Coord) Below() Coord {
 func (coord Coord) Left() Coord {
     //return coord.WithColumn(coord.Column() - 1)
     i := int(coord)
-    if i & 0xffff == 0 {
+    if i&0xffff == 0 {
         i += 0x10000
     }
     return Coord(i - 1)
@@ -63,7 +63,7 @@ func (coord Coord) Left() Coord {
 func (coord Coord) Right() Coord {
     // return coord.WithColumn(coord.Column() + 1)
     i := int(coord)
-    if i & 0xffff == 0xffff {
+    if i&0xffff == 0xffff {
         i -= 0x10000
     }
     return Coord(i + 1)
