@@ -11,10 +11,10 @@ import (
 
 // The immutable clues that, once set, never change
 type Clues struct {
-    rowClues           []int
-    columnClues        []int
-    ships              []int
-    initialSquares     map[Coord]Square
+    rowClues       []int
+    columnClues    []int
+    ships          []int
+    initialSquares map[Coord]Square
 }
 
 func (clues *Clues) NumberOfRows() int {
@@ -29,11 +29,11 @@ func (clues *Clues) NumberOfColumns() int {
 // The mutable parts of the board
 type Board struct {
     *Clues
-    squares            map[Coord]Square
-    logging            bool // turn on to see what's happening
-    numCalls_to_SetSquareAt int
-    numCalls_to_GetSquareAt int
-    numCalls_to_NextCoordToSolve int
+    squares                            map[Coord]Square
+    logging                            bool // turn on to see what's happening
+    numCalls_to_SetSquareAt            int
+    numCalls_to_GetSquareAt            int
+    numCalls_to_NextCoordToSolve       int
     numCalls_to_CalcPossibleSquaresFor int
 }
 
@@ -243,16 +243,16 @@ func (board *Board) Solve() bool {
     coord, foundOne := board.NextCoordToSolve()
     if !foundOne {
         if board.logging {
-            fmt.Printf("Solved with:\n");
-            fmt.Printf("%v calls to SetSquareAt\n", board.numCalls_to_SetSquareAt);
-            fmt.Printf("%v calls to GetSquareAt\n", board.numCalls_to_GetSquareAt);
-            fmt.Printf("%v calls to NextCoordToSolve\n", board.numCalls_to_NextCoordToSolve);
-            fmt.Printf("%v calls to CalcPossibleSquaresFor\n", board.numCalls_to_CalcPossibleSquaresFor);
+            fmt.Printf("Solved with:\n")
+            fmt.Printf("%v calls to SetSquareAt\n", board.numCalls_to_SetSquareAt)
+            fmt.Printf("%v calls to GetSquareAt\n", board.numCalls_to_GetSquareAt)
+            fmt.Printf("%v calls to NextCoordToSolve\n", board.numCalls_to_NextCoordToSolve)
+            fmt.Printf("%v calls to CalcPossibleSquaresFor\n", board.numCalls_to_CalcPossibleSquaresFor)
         }
         return true // solved!
     }
     possibleSquares := board.CalcPossibleSquaresFor(coord)
-    
+
     if possibleSquares.Len() == 0 {
         if board.logging {
             fmt.Printf("No possibilities for %v\n", coord)
@@ -296,6 +296,6 @@ func NewBoard(clues *Clues) *Board {
         }
     }
     return &Board{
-        Clues: clues,
+        Clues:   clues,
         squares: squares}
 }
