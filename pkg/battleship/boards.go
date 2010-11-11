@@ -3,10 +3,8 @@
 
 package battleship
 
-import (
-    "container/vector"
-)
 
+// Returns a very easy 6x6 board
 func Board0() *Board {
     return NewBoard(
         []int{4, 0, 2, 1, 2, 1},
@@ -20,6 +18,7 @@ func Board0() *Board {
         })
 }
 
+// Returns a very easy 8x8 board
 func Board1() *Board {
     return NewBoard(
         []int{2, 4, 2, 3, 2, 1, 4, 2},
@@ -34,6 +33,7 @@ func Board1() *Board {
         })
 }
 
+// Returns an easy 10x10 board
 func Board2() *Board {
     return NewBoard(
         []int{3, 2, 3, 3, 1, 1, 2, 1, 3, 1},
@@ -47,12 +47,4 @@ func Board2() *Board {
             {row: 3, column: 7, square: MIDDLE},
             {row: 5, column: 4, square: TOP},
         })
-}
-
-var BOARDS vector.Vector
-
-func init() {
-    BOARDS.Push(Board0())
-    BOARDS.Push(Board1())
-    BOARDS.Push(Board2())
 }
