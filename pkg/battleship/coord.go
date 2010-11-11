@@ -34,7 +34,7 @@ func (coord Coord) Column() int {
 }
 
 func (coord Coord) String() string {
-    return fmt.Sprintf("(%v,%v)", coord.Row(), coord.Column())
+    return fmt.Sprintf("(row=%v, column=%v)", coord.Row(), coord.Column())
 }
 
 // Returns the coord adjacent immediately above this coord
