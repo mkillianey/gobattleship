@@ -11,15 +11,17 @@ CMD_DIR = cmd
 GODOC_PORT=8000
 GODOC = godoc -http=:$(GODOC_PORT) -path=`pwd`/pkg
 
-all: 
+all: clean test cmd bench
+
+cmd: 
 	$(MAKE) -C pkg/battleship 
 	$(MAKE) -C pkg/battleship install
 	$(MAKE) -C cmd/battleship
 
 clean: 
-	$(MAKE) -C pkg/battleship clean 
-	# TODO:  Uninstall the package, doing something like:
-	#	rm $(GOROOT)/pkg/$(GOOS)_$(GOARCH)/battleship.a
+	$(MAKE) -C pkg/battleship clean
+	# Uninstalling the battleship package from $(GOROOT)/pkg
+	rm -f $(GOROOT)/pkg/$(GOOS)_$(GOARCH)/battleship.a
 	$(MAKE) -C cmd/battleship clean
 
 test: 

@@ -5,11 +5,24 @@ Fun with the Go programming language!
 The battleship *command* is in cmd/battleship.  (This is the executable.)
 The battleship *library* is in pkg/battleship.  (Can be used by multiple commands.)
 
-"make" builds the package, installs it locally, and generates an executable command:
+"make cmd" builds the package, installs it locally, and generates an executable command:
     ./cmd/battleship/battleship
 
 "make test" builds and runs the tests in the battleship package:
     ./pkg/battleship
  
+"make bench" builds and runs the benchmarks in the battleship package:
+    ./pkg/battleship
+ 
+"make gotest" is a more verbose form of "make test"
+
+"make format" reformats all the go files using "gofmt"
+ 
 "make clean" removes the cruft
+
+"make doc" launches a webserver locally on port 8000 (set in Makefile)
+that serves all of the Go content, plus the documentation for the
+battleship pkg 
+
+"make" or "make all" will clean, run tests, build, and then run benchmarks
 
