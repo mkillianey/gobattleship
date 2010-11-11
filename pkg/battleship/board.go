@@ -218,11 +218,7 @@ func (board *Board) Solve() bool {
     return false
 }
 
-func NewBoard(rowClues []int, columnClues []int, ships []int, initialSquares []struct {
-    row    int
-    column int
-    square Square
-}) *Board {
+func NewBoard(rowClues []int, columnClues []int, ships []int, initialSquares map[Coord]Square) *Board {
     squares := make([][]Square, len(rowClues))
     for rowIndex, _ := range squares {
         row := make([]Square, len(columnClues))
@@ -231,8 +227,8 @@ func NewBoard(rowClues []int, columnClues []int, ships []int, initialSquares []s
             row[columnIndex] = UNSOLVED
         }
     }
-    for _, square := range initialSquares {
-        squares[square.row][square.column] = square.square
+    for coord, square := range initialSquares {
+        squares[coord.Row()][coord.Column()] = square
     }
     return &Board{squares: squares, columnClues: columnClues, rowClues: rowClues, ships: ships}
 }
