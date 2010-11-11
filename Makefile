@@ -11,11 +11,12 @@ CMD_DIR = cmd
 GODOC_PORT=8000
 GODOC = godoc -http=:$(GODOC_PORT) -path=`pwd`/pkg
 
-all: clean test cmd bench
+all: clean test command bench
 
-cmd: 
+command: 
 	$(MAKE) -C pkg/battleship 
 	$(MAKE) -C pkg/battleship install
+	$(MAKE) -C cmd/battleship clean
 	$(MAKE) -C cmd/battleship
 
 clean: 
