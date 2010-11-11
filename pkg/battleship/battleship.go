@@ -59,28 +59,32 @@ func (board *Board) NumberOfColumns() int {
     return len(board.columnClues)
 }
 
-func (board *Board) GetSquareAt(coord *Coord) Square {
-    if (coord.column < 0) || (coord.column >= len(board.columnClues)) ||
-        (coord.row < 0) || (coord.row >= len(board.rowClues)) {
+func (board *Board) GetSquareAt(coord Coord) Square {
+    row := coord.Row()
+    column := coord.Column()
+    if (column < 0) ||
+        (column >= board.NumberOfColumns()) ||
+        (row < 0) ||
+        (row >= board.NumberOfRows()) {
         return OUT_OF_BOUNDS
     }
-    return board.squares[coord.row][coord.column]
+    return board.squares[row][column]
 }
 
-func (board Board) SetSquareAt(coord *Coord, square Square) {
-    board.squares[coord.row][coord.column] = square
+func (board Board) SetSquareAt(coord Coord, square Square) {
+    board.squares[coord.Row()][coord.Column()] = square
 }
 
-func (board *Board) GetCoordOfUnsolvedSquare() *Coord {
+func (board *Board) GetCoordOfUnsolvedSquare() (Coord, bool) {
     for rowIndex, row := range board.squares {
         for columnIndex, square := range row {
             if square.IsUnsolved() {
                 //fmt.Printf("%v,%v\n",x,y)
-                return &Coord{row: rowIndex, column: columnIndex}
+                return NewCoord(rowIndex, columnIndex), true
             }
         }
     }
-    return nil
+    return 0, false
 }
 
 func (board *Board) IsValid() bool {
@@ -128,15 +132,15 @@ func (board *Board) UnsolvedCountInColumn(column int) int {
     return count
 }
 
-func (board *Board) CalcPossibleSquaresFor(coord *Coord) *vector.IntVector {
+func (board *Board) CalcPossibleSquaresFor(coord Coord) *vector.IntVector {
     var possibilities vector.IntVector
 
     var requireWater = false
     var requireShip = false
 
-    desired := board.rowClues[coord.row]
-    actual := board.ShipCountInRow(coord.row)
-    unsolved := board.UnsolvedCountInRow(coord.row)
+    desired := board.rowClues[coord.Row()]
+    actual := board.ShipCountInRow(coord.Row())
+    unsolved := board.UnsolvedCountInRow(coord.Row())
     switch {
     case actual > desired:
         // TODO: Should this be a panic?
@@ -152,9 +156,9 @@ func (board *Board) CalcPossibleSquaresFor(coord *Coord) *vector.IntVector {
         return &possibilities
     }
 
-    desired = board.columnClues[coord.column]
-    actual = board.ShipCountInColumn(coord.column)
-    unsolved = board.UnsolvedCountInColumn(coord.column)
+    desired = board.columnClues[coord.Column()]
+    actual = board.ShipCountInColumn(coord.Column())
+    unsolved = board.UnsolvedCountInColumn(coord.Column())
     switch {
     case actual > desired:
         // TODO: Should this be a panic?
@@ -190,8 +194,8 @@ func (board *Board) CalcPossibleSquaresFor(coord *Coord) *vector.IntVector {
 }
 
 func (board *Board) Solve() bool {
-    coord := board.GetCoordOfUnsolvedSquare()
-    if coord == nil {
+    coord, ok := board.GetCoordOfUnsolvedSquare()
+    if !ok {
         return true // all solved!
     }
 
