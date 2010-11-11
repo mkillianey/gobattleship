@@ -9,7 +9,7 @@ GOFMT=gofmt -s -spaces=true -tabindent=false -tabwidth=4
 GOTEST=gotest -v
 
 GOFILES=\
-	battleship.go\
+	board.go\
 	boards.go\
 	coord.go\
 	square.go\
