@@ -38,3 +38,9 @@ func BenchmarkBoard_SolveBoard1(b *testing.B) {
         Board1().Solve()
     }
 }
+
+func BenchmarkBoard_SolveBoard2(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        Board2().Solve()
+    }
+}
