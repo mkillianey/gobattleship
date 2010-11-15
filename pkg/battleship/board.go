@@ -12,7 +12,7 @@ import (
 type Clues struct {
     rowClues       []int
     columnClues    []int
-    ships          []int
+    shipLengths    []int
     initialSquares map[Coord]Square
 }
 
@@ -22,6 +22,22 @@ func (clues *Clues) NumberOfRows() int {
 
 func (clues *Clues) NumberOfColumns() int {
     return len(clues.columnClues)
+}
+
+func (clues *Clues) NumberOfShips() int {
+    return len(clues.shipLengths)
+}
+
+func (clues *Clues) RowClue(row int) int {
+    return clues.rowClues[row]
+}
+
+func (clues *Clues) ColumnClue(column int) int {
+    return clues.columnClues[column]
+}
+
+func (clues *Clues) ShipLength(index int) int {
+    return clues.shipLengths[index]
 }
 
 
