@@ -13,6 +13,7 @@ GOFILES=\
 	boards.go\
 	coord.go\
 	square.go\
+	solver.go\
 
 include $(GOROOT)/src/Make.pkg
 
