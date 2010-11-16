@@ -48,7 +48,6 @@ type Board struct {
 }
 
 
-
 func (board *Board) String() string {
     var s = ""
     for row := 0; row < board.NumberOfRows(); row++ {
@@ -104,13 +103,13 @@ func (board *Board) IsValid() bool {
             if !(above.CouldBeShip() && below.CouldBeShip()) {
                 left := board.SquareAt(coord.Left())
                 right := board.SquareAt(coord.Right())
-                if  !(left.CouldBeShip() && right.CouldBeShip()) {
+                if !(left.CouldBeShip() && right.CouldBeShip()) {
                     return false
                 }
             }
         }
     }
-    
+
     // Make sure we don't find more ships than we have
     shipsFound := make([]bool, board.NumberOfShips())
     for coord, square := range board.squares {
@@ -126,7 +125,7 @@ func (board *Board) IsValid() bool {
                 nextCoord = nextCoord.Below()
             }
             if board.SquareAt(nextCoord) == BOTTOM {
-                found, length = true, candidate + 1
+                found, length = true, candidate+1
             }
         case LEFT:
             candidate := 1
@@ -136,7 +135,7 @@ func (board *Board) IsValid() bool {
                 nextCoord = nextCoord.Right()
             }
             if board.SquareAt(nextCoord) == RIGHT {
-                found, length = true, candidate + 1
+                found, length = true, candidate+1
             }
         }
         if found {
