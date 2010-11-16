@@ -57,8 +57,26 @@ func (square Square) IsShip() bool {
     return false
 }
 
+func (square Square) CouldBeShip() bool {
+    switch square {
+    case TOP,
+        BOTTOM,
+        LEFT,
+        RIGHT,
+        MIDDLE,
+        SINGLE,
+        UNSOLVED:
+        return true
+    }
+    return false
+}
+
 func (square Square) IsWater() bool {
     return square == WATER
+}
+
+func (square Square) CouldBeWater() bool {
+    return square == WATER || square == UNSOLVED
 }
 
 func (square Square) IsUnsolved() bool {

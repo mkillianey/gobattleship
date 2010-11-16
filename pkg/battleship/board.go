@@ -47,10 +47,12 @@ type Board struct {
     squares map[Coord]Square
 }
 
+
+
 func (board *Board) String() string {
     var s = ""
-    for row, rowClue := range board.rowClues {
-        for column, _ := range board.columnClues {
+    for row := 0; row < board.NumberOfRows(); row++ {
+        for column := 0; column < board.NumberOfColumns(); column++ {
             square := board.squares[NewCoord(row, column)]
             switch square {
             case UNSOLVED:
@@ -73,20 +75,17 @@ func (board *Board) String() string {
                 s += "?"
             }
         }
-        s += fmt.Sprintf("%v\n", rowClue)
+        s += fmt.Sprintf("%v\n", board.RowClue(row))
     }
-    for _, columnClue := range board.columnClues {
-        s += fmt.Sprintf("%v", columnClue)
+    for column := 0; column < board.NumberOfColumns(); column++ {
+        s += fmt.Sprintf("%v", board.ColumnClue(column))
     }
     s += "\n"
     return s
 }
 
-func (board *Board) GetSquareAt(coord Coord) Square {
+func (board *Board) SquareAt(coord Coord) Square {
     if square, ok := board.squares[coord]; ok {
-        return square
-    }
-    if square, ok := board.initialSquares[coord]; ok {
         return square
     }
     return OUT_OF_BOUNDS
@@ -96,22 +95,61 @@ func (board *Board) SetSquareAt(coord Coord, square Square) {
     board.squares[coord] = square
 }
 
-
 func (board *Board) IsValid() bool {
+    // Make sure each middle could either be a vertical or horizontal ship
     for coord, square := range board.squares {
         if square == MIDDLE {
-            above := board.GetSquareAt(coord.Above())
-            below := board.GetSquareAt(coord.Below())
-            canBeVertical := (above.IsShip() || above.IsUnsolved()) &&
-                (below.IsShip() || below.IsUnsolved())
-            if !canBeVertical {
-                left := board.GetSquareAt(coord.Left())
-                right := board.GetSquareAt(coord.Right())
-                canBeHorizontal := (left.IsShip() || left.IsUnsolved()) &&
-                    (right.IsShip() || right.IsUnsolved())
-                if !canBeHorizontal {
+            above := board.SquareAt(coord.Above())
+            below := board.SquareAt(coord.Below())
+            if !(above.CouldBeShip() && below.CouldBeShip()) {
+                left := board.SquareAt(coord.Left())
+                right := board.SquareAt(coord.Right())
+                if  !(left.CouldBeShip() && right.CouldBeShip()) {
                     return false
                 }
+            }
+        }
+    }
+    
+    // Make sure we don't find more ships than we have
+    shipsFound := make([]bool, board.NumberOfShips())
+    for coord, square := range board.squares {
+        found, length := false, 0 // measuring from top-left of ship
+        switch square {
+        case SINGLE:
+            found, length = true, 1
+        case TOP:
+            candidate := 1
+            nextCoord := coord.Below()
+            for board.SquareAt(nextCoord) == MIDDLE {
+                candidate++
+                nextCoord = nextCoord.Below()
+            }
+            if board.SquareAt(nextCoord) == BOTTOM {
+                found, length = true, candidate + 1
+            }
+        case LEFT:
+            candidate := 1
+            nextCoord := coord.Right()
+            for board.SquareAt(nextCoord) == MIDDLE {
+                candidate++
+                nextCoord = nextCoord.Right()
+            }
+            if board.SquareAt(nextCoord) == RIGHT {
+                found, length = true, candidate + 1
+            }
+        }
+        if found {
+            markedShipAsFound := false
+            for index, foundYet := range shipsFound {
+                if (!foundYet) && (board.ShipLength(index) == length) {
+                    shipsFound[index] = true
+                    markedShipAsFound = true
+                    break
+                }
+            }
+            if !markedShipAsFound {
+                return false // too many ships of this length
             }
         }
     }
