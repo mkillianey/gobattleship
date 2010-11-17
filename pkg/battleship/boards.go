@@ -39,3 +39,16 @@ func Board2() *Board {
             NewCoord(5, 4): TOP,
         }})
 }
+
+// Returns a difficult 8x8 board
+func Board3() *Board {
+    return NewBoard(&Clues{
+        rowClues:    []int{1, 3, 1, 4, 2, 4, 0, 5},
+        columnClues: []int{4, 3, 2, 1, 4, 0, 5, 1},
+        shipLengths: []int{4, 3, 3, 2, 2, 2, 1, 1, 1, 1},
+        initialSquares: map[Coord]Square{
+            NewCoord(7, 2): SINGLE,
+        }})
+}
+
+

@@ -27,6 +27,10 @@ func TestBoard_SolveBoard2(t *testing.T) {
     doSolve(t, Board2())
 }
 
+func TestBoard_SolveBoard3(t *testing.T) {
+    doSolve(t, Board3())
+}
+
 func BenchmarkBoard_SolveBoard0(b *testing.B) {
     for i := 0; i < b.N; i++ {
         Board0().Solve()
@@ -42,5 +46,11 @@ func BenchmarkBoard_SolveBoard1(b *testing.B) {
 func BenchmarkBoard_SolveBoard2(b *testing.B) {
     for i := 0; i < b.N; i++ {
         Board2().Solve()
+    }
+}
+
+func BenchmarkBoard_SolveBoard3(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        Board3().Solve()
     }
 }

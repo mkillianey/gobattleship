@@ -4,15 +4,16 @@
 package main
 
 import (
-    fmt        "fmt"
-    battleship "battleship"
+    "fmt"
+    "battleship"
 )
 
 
 func main() {
     //board := battleship.Board0()  // works!
     //board := battleship.Board1()  // works, but slow
-    board := battleship.Board2() // doesn't get ships right
+    //board := battleship.Board2()  // requires ship knowledge
+    board := battleship.Board3()
     fmt.Printf("Attempting board:\n%v\n", board)
     if board.Solve() {
         fmt.Printf("Solved:\n%v\n", board)

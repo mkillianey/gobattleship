@@ -87,16 +87,18 @@ func (board *Board) CalcPossibleSquaresFor(coord Coord) *vector.IntVector {
 
     for _, square := range SQUARES {
         switch {
+        case requireWater && requireShip:
         case requireWater && !square.IsWater():
         case requireShip && !square.IsShip():
         case !board.SquareAt(coord.Above()).CanAppearAbove(square):
         case !board.SquareAt(coord.Below()).CanAppearBelow(square):
         case !board.SquareAt(coord.Right()).CanAppearRightOf(square):
         case !board.SquareAt(coord.Left()).CanAppearLeftOf(square):
-        case !board.SquareAt(coord.Above().Left()).CanAppearDiagonallyAdjacentTo(square):
-        case !board.SquareAt(coord.Above().Right()).CanAppearDiagonallyAdjacentTo(square):
-        case !board.SquareAt(coord.Below().Left()).CanAppearDiagonallyAdjacentTo(square):
-        case !board.SquareAt(coord.Below().Right()).CanAppearDiagonallyAdjacentTo(square):
+        case square.IsShip() &&
+            (board.SquareAt(coord.Above().Left()).IsShip() ||
+             board.SquareAt(coord.Above().Right()).IsShip() ||
+             board.SquareAt(coord.Below().Left()).IsShip() ||
+             board.SquareAt(coord.Below().Right()).IsShip()):
         default:
             possibilities.Push(int(square))
         }
