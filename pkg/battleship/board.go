@@ -10,10 +10,15 @@ import (
 
 // The immutable clues that, once set, never change
 type Clues struct {
+    title          string
     rowClues       []int
     columnClues    []int
     shipLengths    []int
     initialSquares map[Coord]Square
+}
+
+func (clues *Clues) Title() string {
+    return clues.title
 }
 
 func (clues *Clues) NumberOfRows() int {
@@ -39,7 +44,6 @@ func (clues *Clues) ColumnClue(column int) int {
 func (clues *Clues) ShipLength(index int) int {
     return clues.shipLengths[index]
 }
-
 
 // The mutable parts of the board
 type Board struct {

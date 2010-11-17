@@ -96,9 +96,9 @@ func (board *Board) CalcPossibleSquaresFor(coord Coord) *vector.IntVector {
         case !board.SquareAt(coord.Left()).CanAppearLeftOf(square):
         case square.IsShip() &&
             (board.SquareAt(coord.Above().Left()).IsShip() ||
-             board.SquareAt(coord.Above().Right()).IsShip() ||
-             board.SquareAt(coord.Below().Left()).IsShip() ||
-             board.SquareAt(coord.Below().Right()).IsShip()):
+                board.SquareAt(coord.Above().Right()).IsShip() ||
+                board.SquareAt(coord.Below().Left()).IsShip() ||
+                board.SquareAt(coord.Below().Right()).IsShip()):
         default:
             possibilities.Push(int(square))
         }

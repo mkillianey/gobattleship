@@ -13,11 +13,14 @@ func main() {
     //board := battleship.Board0()  // works!
     //board := battleship.Board1()  // works, but slow
     //board := battleship.Board2()  // requires ship knowledge
-    board := battleship.Board3()
-    fmt.Printf("Attempting board:\n%v\n", board)
-    if board.Solve() {
-        fmt.Printf("Solved:\n%v\n", board)
-    } else {
-        fmt.Printf("Could not solve!")
+
+    for _, clues := range battleship.SampleClues() {
+        board := battleship.NewBoard(clues)
+        fmt.Printf("Attempting to solve: %v\n%v\n", clues.Title(), board)
+        if board.Solve() {
+            fmt.Printf("Solved:\n%v\n", board)
+        } else {
+            fmt.Printf("Could not solve '%v'!", clues.Title())
+        }
     }
 }

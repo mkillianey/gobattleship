@@ -7,7 +7,9 @@ import (
     "testing"
 )
 
-func doSolve(t *testing.T, board *Board) {
+func doSolve(t *testing.T, clues *Clues) {
+    board := NewBoard(clues)
+    t.Logf("Solving: %v\n%v\n", clues.Title(), board)
     if !board.Solve() {
         t.Error("Could not find solution")
     } else {
@@ -15,42 +17,49 @@ func doSolve(t *testing.T, board *Board) {
     }
 }
 
-func TestBoard_SolveBoard0(t *testing.T) {
-    doSolve(t, Board0())
-}
-
-func TestBoard_SolveBoard1(t *testing.T) {
-    doSolve(t, Board1())
-}
-
-func TestBoard_SolveBoard2(t *testing.T) {
-    doSolve(t, Board2())
-}
-
-func TestBoard_SolveBoard3(t *testing.T) {
-    doSolve(t, Board3())
-}
-
-func BenchmarkBoard_SolveBoard0(b *testing.B) {
-    for i := 0; i < b.N; i++ {
-        Board0().Solve()
+func TestBoard_Solve_SampleClues_All(t *testing.T) {
+    for _, clues := range SampleClues() {
+        doSolve(t, clues)
     }
 }
 
-func BenchmarkBoard_SolveBoard1(b *testing.B) {
+func TestBoard_Solve_SampleClues_0(t *testing.T) {
+    doSolve(t, SampleClues()[0])
+}
+
+func TestBoard_Solve_SampleClues_1(t *testing.T) {
+    doSolve(t, SampleClues()[1])
+}
+
+func TestBoard_Solve_SampleClues_2(t *testing.T) {
+    doSolve(t, SampleClues()[2])
+}
+
+func BenchmarkBoard_Solve_SampleClues_0(b *testing.B) {
+    clues := SampleClues()[0]
     for i := 0; i < b.N; i++ {
-        Board1().Solve()
+        NewBoard(clues).Solve()
     }
 }
 
-func BenchmarkBoard_SolveBoard2(b *testing.B) {
+func BenchmarkBoard_Solve_SampleClues_1(b *testing.B) {
+    clues := SampleClues()[1]
     for i := 0; i < b.N; i++ {
-        Board2().Solve()
+        NewBoard(clues).Solve()
     }
 }
 
-func BenchmarkBoard_SolveBoard3(b *testing.B) {
+func BenchmarkBoard_Solve_SampleClues_2(b *testing.B) {
+    clues := SampleClues()[2]
     for i := 0; i < b.N; i++ {
-        Board3().Solve()
+        NewBoard(clues).Solve()
+    }
+}
+
+func BenchmarkBoard_Solve_SampleClues_All(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        for _, clues := range SampleClues() {
+            NewBoard(clues).Solve()
+        }
     }
 }
