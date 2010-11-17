@@ -10,10 +10,10 @@ GOTEST=gotest -v
 
 GOFILES=\
 	board.go\
-	boards.go\
 	coord.go\
-	square.go\
+	samples.go\
 	solver.go\
+	square.go\
 
 include $(GOROOT)/src/Make.pkg
 
