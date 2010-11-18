@@ -18,9 +18,23 @@ var _CLUES = []*Clues{
         initialSquares: map[Coord]Square{
             NewCoord(1, 0): WATER,
         },
-        // Solution is:
-        //   ~~^~o
-        //   o~v~~
+        solution: `
+O~^~~2
+~~v~O2
+10201
+`,
+    },
+
+
+    &Clues{
+        title:       "impossible by Mick",
+        rowClues:    []int{2, 0, 2},
+        columnClues: []int{2, 0, 2},
+        shipLengths: []int{1, 1, 1, 1},
+        initialSquares: map[Coord]Square{
+            NewCoord(0, 0): WATER, // this makes a solution impossible
+        },
+        solution: "",
     },
 
     &Clues{
@@ -31,6 +45,15 @@ var _CLUES = []*Clues{
         initialSquares: map[Coord]Square{
             NewCoord(2, 2): WATER,
         },
+        solution: `
+O~O~<>4
+~~~~~~0
+~~~~<>2
+~~^~~~1
+~~#~O~2
+~~v~~~1
+104032
+`,
     },
 
     &Clues{
@@ -42,6 +65,17 @@ var _CLUES = []*Clues{
             NewCoord(0, 2): WATER,
             NewCoord(4, 6): TOP,
         },
+        solution: `
+^~~~~~~^2
+v~^~~O~#4
+~~#~~~~v2
+O~#~O~~~3
+~~v~~~^~2
+~~~~~~v~1
+^~<#>~~~4
+v~~~~~~O2
+50512124
+`,
     },
 
     &Clues{
@@ -52,6 +86,17 @@ var _CLUES = []*Clues{
         initialSquares: map[Coord]Square{
             NewCoord(7, 2): SINGLE,
         },
+        solution: `
+~~~O~~~~1
+<>~~~~^~3
+~~~~~~#~1
+<>~~^~#~4
+~~~~#~v~2
+<#>~v~~~4
+~~~~~~~~0
+O~O~O~<>5
+43214051
+`,
     },
 
     &Clues{
@@ -64,6 +109,19 @@ var _CLUES = []*Clues{
             NewCoord(3, 7): MIDDLE,
             NewCoord(5, 4): TOP,
         },
+        solution: `
+^~~~~^~O~~3
+#~~~~v~~~~2
+v~<>~~~~~~3
+~~~~~~<#>~3
+~~O~~~~~~~1
+~~~~^~~~~~1
+~~~~v~~~~^2
+~~~~~~~~~#1
+O~O~~~~~~#3
+~~~~~~~~~v1
+4031221214
+`,
     },
 
     &Clues{
@@ -75,6 +133,19 @@ var _CLUES = []*Clues{
             NewCoord(4, 9): TOP,
             NewCoord(6, 1): WATER,
         },
+        solution: `
+~^~^~O~O~~4
+~#~v~~~~~~2
+~#~~~~~~~~1
+~v~~~~~~~~1
+~~~~~~~~~^1
+~~~~~~~~~v1
+~~~^~~~~~~1
+~^~#~^~~~~3
+~#~v~v~O~O5
+~v~~~~~~~~1
+0705030203
+`,
     },
 
     &Clues{
@@ -87,6 +158,19 @@ var _CLUES = []*Clues{
             NewCoord(4, 5): MIDDLE,
             NewCoord(7, 0): WATER,
         },
+        solution: `
+~~~~~~~~~~0
+~~~~~~~^~^2
+O~~^~~~#~v4
+~~~#~^~v~~3
+~~~#~#~~~~2
+~~~v~v~~~~2
+O~~~~~~O~^3
+~~~~~~~~~v1
+O~~~~~^~~~2
+~~~~~~v~~~1
+3004032404
+`,
     },
 
     &Clues{
@@ -100,6 +184,19 @@ var _CLUES = []*Clues{
             NewCoord(5, 5): SINGLE,
             NewCoord(7, 5): WATER,
         },
+        solution: `
+~^~O~~~~~~2
+~v~~~~~~~~1
+~~~~~~~O~~1
+~~~O~~~~~~1
+~~~~~~~~~~0
+~~~~~O~~~~1
+~~~~~~~~~~0
+~^~^~~<##>6
+~#~#~~~~~~2
+~v~v~<>~<>6
+0505022222
+`,
     },
 
     &Clues{
@@ -112,6 +209,19 @@ var _CLUES = []*Clues{
             NewCoord(2, 9): MIDDLE,
             NewCoord(8, 4): SINGLE,
         },
+        solution: `
+~~~~~~~~~~0
+^~~~~~~~~^2
+v~~~~~~~~#2
+~~<>~^~O~v5
+~~~~~v~~~~1
+^~~~~~~~~~1
+#~O~~<##>~6
+v~~~~~~~~~1
+~~O~O~~~~~2
+~~~~~~~~~~0
+5031131213
+`,
     },
 
     &Clues{
@@ -124,6 +234,19 @@ var _CLUES = []*Clues{
             NewCoord(0, 9): SINGLE,
             NewCoord(5, 9): BOTTOM,
         },
+        solution: `
+~~~~~<#>~O4
+O~O~~~~~~~2
+~~~~O~~~~~1
+~~~~~~~~~~0
+~~^~~~~~~^2
+~~#~~~~~~v2
+~~#~^~~~~~2
+~~v~v~<>~~4
+~~~~~~~~~~0
+~~~~<#>~~~3
+1050423203
+`,
     },
 
     &Clues{
@@ -136,5 +259,18 @@ var _CLUES = []*Clues{
             NewCoord(2, 3): MIDDLE,
             NewCoord(5, 9): WATER,
         },
+        solution: `
+~~~~O~~~~^2
+~~~~~~~~~v1
+^~<#>~~~~~4
+v~~~~~~^~^3
+~~~~~^~#~v3
+~~~~~#~v~~2
+O~~~~#~~~O3
+~~~~~v~~~~1
+O~~~~~~~~~1
+~~~~~~~~~~0
+4011240305
+`,
     },
 }

@@ -4,62 +4,99 @@
 package battleship
 
 import (
+    "strings"
     "testing"
 )
 
 func doSolve(t *testing.T, clues *Clues) {
-    board := NewBoard(clues)
-    t.Logf("Solving: %v\n%v\n", clues.Title(), board)
-    if !board.Solve() {
-        t.Error("Could not find solution")
+    solver := NewSolver()
+    board, ok := solver.SolveClues(clues)
+    if expected := strings.TrimSpace(clues.Solution()); expected == "" {
+        if ok {
+            t.Errorf("Found false solution:\n%v\n", board)
+        } else {
+            t.Log("Correctly deduced no solution\n")
+        }
     } else {
-        t.Logf("Found solution:\n%v\n", board)
+        expected = strings.TrimSpace(expected)
+        if !ok {
+            t.Errorf("Didn't find solution:\n%v\n", expected)
+        } else if actual := strings.TrimSpace(board.String()); expected != actual {
+            t.Errorf("Expected solution:\n%v\nActualSolution:\n%v\n", expected, actual)
+        } else {
+            t.Logf("Correctly deduced solution:\n%v\n", expected)
+        }
     }
 }
 
-func TestBoard_Solve_SampleClues_All(t *testing.T) {
-    for _, clues := range SampleClues() {
+func TestSolver_Solve_SampleClues(t *testing.T) {
+    for index, clues := range SampleClues() {
+        t.Logf("Solving sample #%v\n%v\n", index, clues)
         doSolve(t, clues)
     }
 }
 
-func TestBoard_Solve_SampleClues_0(t *testing.T) {
-    doSolve(t, SampleClues()[0])
-}
-
-func TestBoard_Solve_SampleClues_1(t *testing.T) {
-    doSolve(t, SampleClues()[1])
-}
-
-func TestBoard_Solve_SampleClues_2(t *testing.T) {
-    doSolve(t, SampleClues()[2])
-}
-
-func BenchmarkBoard_Solve_SampleClues_0(b *testing.B) {
-    clues := SampleClues()[0]
+func solverBenchmark(b *testing.B, index int) {
+    solver := NewSolver()
+    clues := SampleClues()[index]
     for i := 0; i < b.N; i++ {
-        NewBoard(clues).Solve()
+        solver.SolveClues(clues)
     }
 }
 
-func BenchmarkBoard_Solve_SampleClues_1(b *testing.B) {
-    clues := SampleClues()[1]
-    for i := 0; i < b.N; i++ {
-        NewBoard(clues).Solve()
-    }
+func BenchmarkSolver_Solve_SampleClues_0(b *testing.B) {
+    solverBenchmark(b, 0)
 }
 
-func BenchmarkBoard_Solve_SampleClues_2(b *testing.B) {
-    clues := SampleClues()[2]
-    for i := 0; i < b.N; i++ {
-        NewBoard(clues).Solve()
-    }
+func BenchmarkSolver_Solve_SampleClues_1(b *testing.B) {
+    solverBenchmark(b, 1)
+}
+
+func BenchmarkSolver_Solve_SampleClues_2(b *testing.B) {
+    solverBenchmark(b, 2)
+}
+
+func BenchmarkSolver_Solve_SampleClues_3(b *testing.B) {
+    solverBenchmark(b, 3)
+}
+
+func BenchmarkSolver_Solve_SampleClues_4(b *testing.B) {
+    solverBenchmark(b, 4)
+}
+
+func BenchmarkSolver_Solve_SampleClues_5(b *testing.B) {
+    solverBenchmark(b, 5)
+}
+
+func BenchmarkSolver_Solve_SampleClues_6(b *testing.B) {
+    solverBenchmark(b, 6)
+}
+
+func BenchmarkSolver_Solve_SampleClues_7(b *testing.B) {
+    solverBenchmark(b, 7)
+}
+
+func BenchmarkSolver_Solve_SampleClues_8(b *testing.B) {
+    solverBenchmark(b, 8)
+}
+
+func BenchmarkSolver_Solve_SampleClues_9(b *testing.B) {
+    solverBenchmark(b, 9)
+}
+
+func BenchmarkSolver_Solve_SampleClues_10(b *testing.B) {
+    solverBenchmark(b, 10)
+}
+
+func BenchmarkSolver_Solve_SampleClues_11(b *testing.B) {
+    solverBenchmark(b, 11)
 }
 
 func BenchmarkBoard_Solve_SampleClues_All(b *testing.B) {
+    solver := NewSolver()
     for i := 0; i < b.N; i++ {
         for _, clues := range SampleClues() {
-            NewBoard(clues).Solve()
+            solver.SolveClues(clues)
         }
     }
 }

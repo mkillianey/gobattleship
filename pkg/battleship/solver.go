@@ -1,17 +1,20 @@
 package battleship
 
 import (
-    //    "fmt"
-    "container/vector"
+//    "fmt"
 )
 
+
+type Solver interface {
+    SolveClues(clues *Clues) (solution *Board, ok bool)
+}
 
 // Returns the minimum and maximum number of ships in this
 // row.  The minimum is the number of ships *currently*
 // placed in this row.  The maximum is the number of ships
 // that could be placed if all unsolved squares were filled
 // with ships.
-func (board *Board) MinMaxShipsInRow(coord Coord) (int, int) {
+func minMaxShipsInRow(board *Board, coord Coord) (int, int) {
     var ships, unsolveds = 0, 0
     for column := 0; column < board.NumberOfColumns(); column++ {
         square := board.SquareAt(coord.WithColumn(column))
@@ -30,7 +33,7 @@ func (board *Board) MinMaxShipsInRow(coord Coord) (int, int) {
 // placed in this column.  The maximum is the number of ships
 // that could be placed if all unsolved squares were filled
 // with ships.
-func (board *Board) MinMaxShipsInColumn(coord Coord) (int, int) {
+func minMaxShipsInColumn(board *Board, coord Coord) (int, int) {
     var ships, unsolveds = 0, 0
     for row := 0; row < board.NumberOfRows(); row++ {
         square := board.SquareAt(coord.WithRow(row))
@@ -45,110 +48,140 @@ func (board *Board) MinMaxShipsInColumn(coord Coord) (int, int) {
 }
 
 
-func (board *Board) CalcPossibleSquaresFor(coord Coord) *vector.IntVector {
-    var possibilities vector.IntVector
+var NO_SOLUTIONS_FOR_SQUARE []Square = []Square{}
+var SQUARE_MUST_BE_WATER []Square = []Square{WATER}
 
-    var requireWater = false
+func calcPossibleSquares(board *Board, coord Coord) []Square {
     var requireShip = false
-
+    var requireWater = false
     desired := board.rowClues[coord.Row()]
-    minships, maxships := board.MinMaxShipsInRow(coord)
+    alreadyPlacedShips, maxPossibleShips := minMaxShipsInRow(board, coord)
     switch {
-    case minships > desired:
+    case alreadyPlacedShips == desired:
+        requireWater = true
+    case maxPossibleShips == desired:
+        requireShip = true
+    case alreadyPlacedShips > desired:
         // TODO: Should this be a panic?
         //fmt.Printf("Unsolvable:  too many ships in row at coord %v", coord)
-        return &possibilities
-    case minships == desired:
-        requireWater = true
-    case maxships == desired:
-        requireShip = true
-    case maxships < desired:
+        return NO_SOLUTIONS_FOR_SQUARE
+    case maxPossibleShips < desired:
         // TODO: Should this be a panic?
         //fmt.Printf("Unsolvable:  too few ships in row at coord %v", coord)
-        return &possibilities
+        return NO_SOLUTIONS_FOR_SQUARE
     }
 
     desired = board.columnClues[coord.Column()]
-    minships, maxships = board.MinMaxShipsInColumn(coord)
+    alreadyPlacedShips, maxPossibleShips = minMaxShipsInColumn(board, coord)
     switch {
-    case minships > desired:
+    case alreadyPlacedShips == desired:
+        requireWater = true
+    case maxPossibleShips == desired:
+        requireShip = true
+    case alreadyPlacedShips > desired:
         // TODO: Should this be a panic?
         //fmt.Printf("Unsolvable:  too many ships in column at coord %v", coord)
-        return &possibilities
-    case minships == desired:
-        requireWater = true
-    case maxships == desired:
-        requireShip = true
-    case maxships < desired:
+        return NO_SOLUTIONS_FOR_SQUARE
+    case maxPossibleShips < desired:
         // TODO: Should this be a panic?
         //fmt.Printf("Unsolvable:  too few ships in column at coord %v", coord)
-        return &possibilities
+        return NO_SOLUTIONS_FOR_SQUARE
     }
+
+    if requireShip && requireWater {
+        return NO_SOLUTIONS_FOR_SQUARE
+    }
+
+    var possibilities []Square = make([]Square, len(SQUARES))
+    var possibilityIndex = 0
+
+    var above = coord.Above()
+    var below = coord.Below()
+    var left = coord.Left()
+    var right = coord.Right()
+
+    var squareAbove = board.SquareAt(above)
+    var squareBelow = board.SquareAt(below)
+    var squareLeft = board.SquareAt(left)
+    var squareRight = board.SquareAt(right)
 
     for _, square := range SQUARES {
         switch {
-        case requireWater && requireShip:
         case requireWater && !square.IsWater():
         case requireShip && !square.IsShip():
-        case !board.SquareAt(coord.Above()).CanAppearAbove(square):
-        case !board.SquareAt(coord.Below()).CanAppearBelow(square):
-        case !board.SquareAt(coord.Right()).CanAppearRightOf(square):
-        case !board.SquareAt(coord.Left()).CanAppearLeftOf(square):
+        case !squareAbove.CanAppearAbove(square):
+        case !squareBelow.CanAppearBelow(square):
+        case !squareLeft.CanAppearLeftOf(square):
+        case !squareRight.CanAppearRightOf(square):
         case square.IsShip() &&
-            (board.SquareAt(coord.Above().Left()).IsShip() ||
-                board.SquareAt(coord.Above().Right()).IsShip() ||
-                board.SquareAt(coord.Below().Left()).IsShip() ||
-                board.SquareAt(coord.Below().Right()).IsShip()):
+            (board.SquareAt(above.Left()).IsShip() ||
+                board.SquareAt(above.Right()).IsShip() ||
+                board.SquareAt(below.Left()).IsShip() ||
+                board.SquareAt(below.Right()).IsShip()):
+            requireWater = true
         default:
-            possibilities.Push(int(square))
+            possibilities[possibilityIndex] = square
+            possibilityIndex++
         }
     }
-    return &possibilities
+    return possibilities[:possibilityIndex]
 }
 
 
 // Finds the next coord on the board to solve, choosing one
 // of the coordinates with the fewest possibilities
-func (board *Board) NextCoordToSolve() (Coord, bool) {
+func nextCoordToSolve(board *Board) (Coord, bool) {
     var found = false
     var minCoord Coord
     var minCount int
     for coord, square := range board.squares {
         if square.IsUnsolved() {
-            possibleSquares := board.CalcPossibleSquaresFor(coord)
-            if possibleSquares.Len() <= 1 {
+            possibleSquares := calcPossibleSquares(board, coord)
+            if len(possibleSquares) <= 1 {
                 return coord, true
             }
-            if (!found) || (possibleSquares.Len() < minCount) {
+            if (!found) || (len(possibleSquares) < minCount) {
                 found = true
                 minCoord = coord
-                minCount = possibleSquares.Len()
+                minCount = len(possibleSquares)
             }
         }
     }
     return minCoord, found
 }
 
-func (board *Board) Solve() bool {
-    if !board.IsValid() {
-        return false
-    }
-    coord, foundOne := board.NextCoordToSolve()
-    if !foundOne {
-        return true // solved!
-    }
-    possibleSquares := board.CalcPossibleSquaresFor(coord)
+type BasicSolver struct{}
 
-    for _, possibleSquare := range *possibleSquares {
+func (solver *BasicSolver) recursiveSolve(board *Board) (*Board, bool) {
+    if !board.IsValid() {
+        return nil, false
+    }
+    coord, foundOne := nextCoordToSolve(board)
+    if !foundOne {
+        return board, true // solved!
+    }
+    possibleSquares := calcPossibleSquares(board, coord)
+
+    for _, possibleSquare := range possibleSquares {
         square := Square(possibleSquare)
         board.SetSquareAt(coord, square)
         //fmt.Printf("Trying %v at %v\n%v\n", square, coord, board)
-        if board.Solve() {
-            return true
+        if solution, ok := solver.recursiveSolve(board); ok {
+            return solution, ok
         }
         //fmt.Printf("Undoing %v at %v.\n", square, coord)
-        board.SetSquareAt(coord, UNSOLVED)
     }
+    board.SetSquareAt(coord, UNSOLVED)
     //fmt.Printf("Backtracking from coord %v:\n", coord)
-    return false
+    return nil, false
+}
+
+func (solver *BasicSolver) SolveClues(clues *Clues) (solution *Board, ok bool) {
+    solution, ok = solver.recursiveSolve(NewBoard(clues))
+    return solution, ok
+}
+
+func NewSolver() Solver {
+    solver := BasicSolver{}
+    return &solver
 }
