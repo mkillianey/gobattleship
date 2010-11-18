@@ -1,7 +1,7 @@
 package battleship
 
 import (
-    //"fmt"
+//"fmt"
 )
 
 
@@ -121,7 +121,7 @@ func calcPossibleSquares(board *Board, coord Coord) []Square {
             requireWater = true
         case square == MIDDLE &&
             !((squareAbove.CouldBeShip() && squareBelow.CouldBeShip()) ||
-              (squareLeft.CouldBeShip() && squareRight.CouldBeShip())):
+                (squareLeft.CouldBeShip() && squareRight.CouldBeShip())):
         default:
             possibilities[numPossibilities] = square
             numPossibilities++
@@ -191,4 +191,3 @@ func (solver *SquareSolver) SolveClues(clues *Clues) (solution *Board, ok bool) 
 func NewSolver() Solver {
     return &SquareSolver{}
 }
-
