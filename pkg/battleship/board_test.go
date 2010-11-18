@@ -29,11 +29,52 @@ func doSolve(t *testing.T, clues *Clues) {
     }
 }
 
-func TestSolver_Solve_SampleClues(t *testing.T) {
-    for index, clues := range SampleClues() {
-        t.Logf("Solving sample #%v\n%v\n", index, clues)
-        doSolve(t, clues)
-    }
+func TestSolver_Solve_SampleClues_0(t *testing.T) {
+    doSolve(t, SampleClues()[0])
+}
+
+func TestSolver_Solve_SampleClues_1(t *testing.T) {
+    doSolve(t, SampleClues()[1])
+}
+
+func TestSolver_Solve_SampleClues_2(t *testing.T) {
+    doSolve(t, SampleClues()[2])
+}
+
+func TestSolver_Solve_SampleClues_3(t *testing.T) {
+    doSolve(t, SampleClues()[3])
+}
+
+func TestSolver_Solve_SampleClues_4(t *testing.T) {
+    doSolve(t, SampleClues()[4])
+}
+
+func TestSolver_Solve_SampleClues_5(t *testing.T) {
+    doSolve(t, SampleClues()[5])
+}
+
+func TestSolver_Solve_SampleClues_6(t *testing.T) {
+    doSolve(t, SampleClues()[6])
+}
+
+func TestSolver_Solve_SampleClues_7(t *testing.T) {
+    doSolve(t, SampleClues()[7])
+}
+
+func TestSolver_Solve_SampleClues_8(t *testing.T) {
+    doSolve(t, SampleClues()[8])
+}
+
+func TestSolver_Solve_SampleClues_9(t *testing.T) {
+    doSolve(t, SampleClues()[9])
+}
+
+func TestSolver_Solve_SampleClues_10(t *testing.T) {
+    doSolve(t, SampleClues()[10])
+}
+
+func TestSolver_Solve_SampleClues_11(t *testing.T) {
+    doSolve(t, SampleClues()[11])
 }
 
 func solverBenchmark(b *testing.B, index int) {
@@ -92,7 +133,7 @@ func BenchmarkSolver_Solve_SampleClues_11(b *testing.B) {
     solverBenchmark(b, 11)
 }
 
-func BenchmarkBoard_Solve_SampleClues_All(b *testing.B) {
+func BenchmarkSolver_Solve_SampleClues_All(b *testing.B) {
     solver := NewSolver()
     for i := 0; i < b.N; i++ {
         for _, clues := range SampleClues() {

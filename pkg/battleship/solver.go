@@ -1,7 +1,7 @@
 package battleship
 
 import (
-//    "fmt"
+    //"fmt"
 )
 
 
@@ -93,7 +93,7 @@ func calcPossibleSquares(board *Board, coord Coord) []Square {
     }
 
     var possibilities []Square = make([]Square, len(SQUARES))
-    var possibilityIndex = 0
+    var numPossibilities = 0
 
     var above = coord.Above()
     var below = coord.Below()
@@ -119,69 +119,76 @@ func calcPossibleSquares(board *Board, coord Coord) []Square {
                 board.SquareAt(below.Left()).IsShip() ||
                 board.SquareAt(below.Right()).IsShip()):
             requireWater = true
+        case square == MIDDLE &&
+            !((squareAbove.CouldBeShip() && squareBelow.CouldBeShip()) ||
+              (squareLeft.CouldBeShip() && squareRight.CouldBeShip())):
         default:
-            possibilities[possibilityIndex] = square
-            possibilityIndex++
+            possibilities[numPossibilities] = square
+            numPossibilities++
         }
     }
-    return possibilities[:possibilityIndex]
+    return possibilities[:numPossibilities]
 }
 
 
-// Finds the next coord on the board to solve, choosing one
-// of the coordinates with the fewest possibilities
-func nextCoordToSolve(board *Board) (Coord, bool) {
-    var found = false
+// SquareSolver makes a copy of the board and fills in all forced
+// squares, then guesses what to fill in for the most constrained
+// unsolved square and calls itself recursively to see if it can
+// find a solution.
+type SquareSolver struct{}
+
+func (solver *SquareSolver) solve(board *Board) (*Board, bool) {
+    workingCopy := board.Copy()
+    //fmt.Printf("Solving:\n%v\n", workingCopy)
+
+    var foundUnsolved = false
     var minCoord Coord
     var minCount int
-    for coord, square := range board.squares {
+    for coord, square := range workingCopy.squares {
         if square.IsUnsolved() {
-            possibleSquares := calcPossibleSquares(board, coord)
-            if len(possibleSquares) <= 1 {
-                return coord, true
-            }
-            if (!found) || (len(possibleSquares) < minCount) {
-                found = true
-                minCoord = coord
-                minCount = len(possibleSquares)
+            candidates := calcPossibleSquares(workingCopy, coord)
+            count := len(candidates)
+            switch count {
+            case 0:
+                //fmt.Printf("%v is unsolved: No solution\n", coord)
+                return nil, false
+            case 1:
+                //fmt.Printf("%v is unsolved, but can only be %v\n", coord, candidates)
+                workingCopy.SetSquareAt(coord, Square(candidates[0]))
+            default:
+                //fmt.Printf("%v is unsolved: %v\n", coord, candidates)
+                if !foundUnsolved || minCount > len(candidates) {
+                    foundUnsolved = true
+                    minCoord = coord
+                    minCount = len(candidates)
+                }
             }
         }
     }
-    return minCoord, found
-}
-
-type BasicSolver struct{}
-
-func (solver *BasicSolver) recursiveSolve(board *Board) (*Board, bool) {
-    if !board.IsValid() {
+    if !workingCopy.IsValid() {
+        //fmt.Printf("Something went wrong...this board is now invalid\n%v\n", workingCopy);
         return nil, false
     }
-    coord, foundOne := nextCoordToSolve(board)
-    if !foundOne {
-        return board, true // solved!
+    if !foundUnsolved {
+        return workingCopy, true
     }
-    possibleSquares := calcPossibleSquares(board, coord)
-
-    for _, possibleSquare := range possibleSquares {
-        square := Square(possibleSquare)
-        board.SetSquareAt(coord, square)
-        //fmt.Printf("Trying %v at %v\n%v\n", square, coord, board)
-        if solution, ok := solver.recursiveSolve(board); ok {
-            return solution, ok
+    for _, square := range calcPossibleSquares(workingCopy, minCoord) {
+        workingCopy.SetSquareAt(minCoord, square)
+        //fmt.Printf("Trying %v at %v\n", square, minCoord)
+        if solution, ok := solver.solve(workingCopy); ok {
+            return solution, true
         }
-        //fmt.Printf("Undoing %v at %v.\n", square, coord)
+        //fmt.Printf("Undoing %v at %v\n", square, minCoord)
     }
-    board.SetSquareAt(coord, UNSOLVED)
-    //fmt.Printf("Backtracking from coord %v:\n", coord)
     return nil, false
 }
 
-func (solver *BasicSolver) SolveClues(clues *Clues) (solution *Board, ok bool) {
-    solution, ok = solver.recursiveSolve(NewBoard(clues))
+func (solver *SquareSolver) SolveClues(clues *Clues) (solution *Board, ok bool) {
+    solution, ok = solver.solve(NewBoard(clues))
     return solution, ok
 }
 
 func NewSolver() Solver {
-    solver := BasicSolver{}
-    return &solver
+    return &SquareSolver{}
 }
+
