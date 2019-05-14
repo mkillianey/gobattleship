@@ -5,15 +5,11 @@ package main
 
 import (
     "fmt"
-    "battleship"
+    "github.com/mkillianey/gobattleship/battleship"
 )
 
 
 func main() {
-    //board := battleship.Board0()  // works!
-    //board := battleship.Board1()  // works, but slow
-    //board := battleship.Board2()  // requires ship knowledge
-
     solver := battleship.NewSolver()
 
     for _, clues := range battleship.SampleClues() {
